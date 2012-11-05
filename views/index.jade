@@ -1,0 +1,32 @@
+extends layout
+
+block content
+  script(src='/socket.io/socket.io.js')
+  script
+    var socket = io.connect('http://127.0.0.1:3000/');
+    socket.on('test', function(msg){
+
+    });
+
+    socket.on('messageUpdate', function(data){
+      $('#board').append('<p style=\'color:red;\'>'+data.user+':');
+      $('#board').append('<p style=\'color:blue;\'>'+data.msg);
+      $("#board").animate({scrollTop:$("#board")[0].scrollHeight}, 100); 
+    });
+
+    function newMessage(){
+      var user =$('#userTB').val();
+      var msg = $('#messageTB').val();
+      socket.emit('newMessage', {user: user, msg: msg});
+    }
+
+  div(id='board', style="width:600px;height:400px;overflow:auto;")
+    
+  div.editor
+    form
+      p user 
+        input(id='userTB', type='textbox')
+      p message 
+        input(id='messageTB', type='textbox')
+  div
+    button(id='sendButton', onclick='newMessage();') send
